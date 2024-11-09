@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>512</width>
+    <height>364</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Photo Collection</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="formLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>160</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="albumLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QPushButton" name="create_alb">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Создать альбом</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>0</y>
+      <width>351</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="list_files"/>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>512</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="help">
+    <property name="title">
+     <string>Помощь</string>
+    </property>
+    <addaction name="about"/>
+   </widget>
+   <widget class="QMenu" name="tags">
+    <property name="title">
+     <string>Теги</string>
+    </property>
+    <addaction name="create_tag"/>
+    <addaction name="del_tag"/>
+    <addaction name="edit_tag"/>
+    <addaction name="separator"/>
+    <addaction name="all_tags"/>
+   </widget>
+   <widget class="QMenu" name="export_2">
+    <property name="title">
+     <string>Экспортировать</string>
+    </property>
+    <addaction name="export_txt"/>
+    <addaction name="export_csv"/>
+   </widget>
+   <addaction name="tags"/>
+   <addaction name="export_2"/>
+   <addaction name="help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="about">
+   <property name="text">
+    <string>О приложении</string>
+   </property>
+  </action>
+  <action name="create_tag">
+   <property name="text">
+    <string>Создать тег</string>
+   </property>
+  </action>
+  <action name="del_tag">
+   <property name="text">
+    <string>Удалить тег</string>
+   </property>
+  </action>
+  <action name="edit_tag">
+   <property name="text">
+    <string>Изменить тег</string>
+   </property>
+  </action>
+  <action name="all_tags">
+   <property name="text">
+    <string>Все теги</string>
+   </property>
+  </action>
+  <action name="export_txt">
+   <property name="text">
+    <string>...в txt</string>
+   </property>
+  </action>
+  <action name="export_csv">
+   <property name="text">
+    <string>...в csv</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
