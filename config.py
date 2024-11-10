@@ -3,6 +3,7 @@ icon = 'files/icon.ico'
 
 # UI файлы
 main_window = 'files/main_window.ui'
+tags_window = 'files/tags_window.ui'
 
 new_album = 'files/new_album.ui'
 new_tag = 'files/new_tag.ui'
