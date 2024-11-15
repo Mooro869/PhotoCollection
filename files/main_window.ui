@@ -9,20 +9,32 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>515</width>
-    <height>357</height>
+    <width>530</width>
+    <height>358</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Photo Collection</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
-      <width>160</width>
+      <width>201</width>
       <height>321</height>
      </rect>
     </property>
@@ -30,7 +42,7 @@
      <item row="0" column="0" colspan="2">
       <widget class="QPushButton" name="create_alb">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -40,29 +52,111 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Текущий альбом:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QComboBox" name="comboBox_album">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentText">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="add_image">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Добавить
+изображениие</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="cur_alb">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="upgrage_btn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Обновить</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>220</x>
       <y>0</y>
-      <width>351</width>
+      <width>301</width>
       <height>321</height>
      </rect>
     </property>
-    <layout class="QFormLayout" name="list_files"/>
+    <layout class="QFormLayout" name="list_files">
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Выберите изображение:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QComboBox" name="comboBox_image">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>515</width>
+     <width>530</width>
      <height>18</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <widget class="QMenu" name="help">
     <property name="title">
@@ -74,12 +168,9 @@
     <property name="title">
      <string>Теги</string>
     </property>
-    <addaction name="edits_tags"/>
-    <addaction name="create_tag"/>
-    <addaction name="del_tag"/>
-    <addaction name="edit_tag"/>
-    <addaction name="separator"/>
-    <addaction name="all_tags"/>
+    <addaction name="create_tag_2"/>
+    <addaction name="del_tag_2"/>
+    <addaction name="edit_tag_2"/>
    </widget>
    <widget class="QMenu" name="export_2">
     <property name="title">
@@ -88,10 +179,22 @@
     <addaction name="export_txt"/>
     <addaction name="export_csv"/>
    </widget>
+   <widget class="QMenu" name="albums">
+    <property name="title">
+     <string>Альбомы</string>
+    </property>
+    <addaction name="del_album"/>
+    <addaction name="edit_album"/>
+    <addaction name="del_image"/>
+    <addaction name="separator"/>
+    <addaction name="all_album"/>
+   </widget>
+   <addaction name="albums"/>
    <addaction name="tags"/>
    <addaction name="export_2"/>
    <addaction name="help"/>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <action name="about">
    <property name="text">
     <string>О приложении</string>
@@ -114,7 +217,7 @@
   </action>
   <action name="all_tags">
    <property name="text">
-    <string>Все теги</string>
+    <string>Менеджер тегов</string>
    </property>
   </action>
   <action name="export_txt">
@@ -130,6 +233,61 @@
   <action name="edits_tags">
    <property name="text">
     <string>Редактировать теги</string>
+   </property>
+  </action>
+  <action name="all_tags_2">
+   <property name="text">
+    <string>Все теги</string>
+   </property>
+  </action>
+  <action name="del_tag_2">
+   <property name="text">
+    <string>Удалить тег</string>
+   </property>
+  </action>
+  <action name="create_tag_2">
+   <property name="text">
+    <string>Создать тег</string>
+   </property>
+  </action>
+  <action name="edit_tag_2">
+   <property name="text">
+    <string>Изменить тег</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Создать альбом</string>
+   </property>
+  </action>
+  <action name="del_album">
+   <property name="text">
+    <string>Удалить альбом</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>Удалить изображение из альбома</string>
+   </property>
+  </action>
+  <action name="edit_album">
+   <property name="text">
+    <string>Изменить альбом</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Удалить изображение</string>
+   </property>
+  </action>
+  <action name="del_image">
+   <property name="text">
+    <string>Удалить изображение</string>
+   </property>
+  </action>
+  <action name="all_album">
+   <property name="text">
+    <string>Все альбомы</string>
    </property>
   </action>
  </widget>
