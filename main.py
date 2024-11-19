@@ -50,7 +50,7 @@ class PhotoCollection(QMainWindow):
 
     def ed_tag(self):  # Обработчик изменения тега
         self.edit_tag = Edit_Tag()
-        self.edit_tag.snow()
+        self.edit_tag.show()
 
     def dl_tag(self):  # Обработчик удаления тега
         self.tag = Del_Tag()
