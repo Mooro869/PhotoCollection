@@ -1,11 +1,9 @@
 import sys
 from time import sleep
 import sqlite3
+from PyQt6 import QtGui, uic
+from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow
 import config
-
-from PyQt6 import QtCore, QtWidgets, QtGui, uic
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLabel, QComboBox, QTableWidgetItem, QToolBar
-
 
 
 class PhotoCollection(QMainWindow):
@@ -18,27 +16,18 @@ class PhotoCollection(QMainWindow):
         status_bar = None
         status_bar = self.statusbar
 
+        # Обработка кнопок главного окна
+        self.create_alb.clicked.connect(self.new_alb)
+
         # Обработка тегов из menuBar
         self.create_tag_2.triggered.connect(self.cr_tag)
         self.edit_tag_2.triggered.connect(self.ed_tag)
         self.del_tag_2.triggered.connect(self.dl_tag)
 
-        # Обработка кнопок главного окна
-        self.create_alb.clicked.connect(self.new_alb)
-
         # Обработка альбомов из menuBar
 
-
-
         # # Обработчик экспортов из menuBar
-        # self.export_txt.triggered.connect(...)
         # self.export_csv.triggered.connect(...)
-        #
-        # # !!! ВОЗМОЖНО !!!        # self.export_xml.triggered.connect(...)
-        # self.export_json.triggered.connect(...)
-        # self.export_xlsx.triggered.connect(...)
-
-
 
     '''
     ТЕГИ
@@ -50,12 +39,11 @@ class PhotoCollection(QMainWindow):
 
     def ed_tag(self):  # Обработчик изменения тега
         self.edit_tag = Edit_Tag()
-        self.edit_tag.snow()
+        self.edit_tag.show()
 
     def dl_tag(self):  # Обработчик удаления тега
         self.tag = Del_Tag()
         self.tag.show()
-
 
     '''
     АЛЬБОМЫ
@@ -64,9 +52,6 @@ class PhotoCollection(QMainWindow):
     def new_alb(self):  # Обработчик создания нового альбома
         self.alb = New_Album()
         self.alb.show()
-
-
-
 
 
 class New_Tag(QWidget):
@@ -95,7 +80,6 @@ class Del_Tag(QWidget):
         uic.loadUi(config.del_tag, self)
         self.del_tag_btn.clicked.connect(self.check_del_tag)
 
-
     def check_del_tag(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
@@ -104,7 +88,6 @@ class Del_Tag(QWidget):
         con.close()
         self.close()
         status_bar.showMessage(f'{config.del_tag_text}', 3_000)
-
 
     '''
     проверка на существования тега
@@ -127,12 +110,10 @@ class New_Album(QWidget):
         status_bar.showMessage(f'{config.new_album_text}', 3_000)
 
 
-
 class Edit_Tag(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi(config.edit_tag, self)
-
         self.pushButton.clicked.connect(self.ok)
 
         con = sqlite3.connect(config.bd_file)
@@ -141,13 +122,13 @@ class Edit_Tag(QWidget):
         self.comboBox.addItems([item[0] for item in result])
         con.close()
 
-
     def ok(self):
         status_bar.showMessage(f'{config.edit_tag_text}', 3_000)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
     # Установка иконки
     icon = QtGui.QIcon(config.icon)
     app.setWindowIcon(icon)
