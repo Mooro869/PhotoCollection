@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Изменить альбом</string>
   </property>
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
