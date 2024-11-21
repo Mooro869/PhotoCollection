@@ -1,6 +1,7 @@
 bd_file = 'files/photocoll.sqlite'
 icon = 'files/icon.ico'
 main_window = 'files/main_window_2.ui'
+image = 'files/image.jpg'
 
 
 # АЛЬБОМЫ

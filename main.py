@@ -1,13 +1,10 @@
 import sys
-from time import sleep
 import sqlite3
+import config
 
 from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui, uic
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QFormLayout, QFileDialog
-
-import config
-
 
 
 class PhotoCollection(QMainWindow):
@@ -19,12 +16,15 @@ class PhotoCollection(QMainWindow):
         global status_bar
         status_bar = self.statusbar
 
+        # Установка изображения в главном окне
+        self.pixmap = QPixmap(config.image)
+        self.label_img.setPixmap(self.pixmap)
+
         # Обработка кнопок главного окна
         self.create_alb.clicked.connect(self.new_alb)
-        self.update_btn.clicked.connect(self.update_ui)
+        self.update_btn.clicked.connect(self.update_alb)
         self.choose_album.clicked.connect(self.choose_alb)
         self.add_image.clicked.connect(self.add_img)
-
 
         # Обработка тегов из menuBar
         self.create_tag_2.triggered.connect(self.cr_tag)
@@ -35,8 +35,16 @@ class PhotoCollection(QMainWindow):
         self.del_album.triggered.connect(self.dl_alb)
         self.edit_album.triggered.connect(self.ed_album)
 
+        # Обработка изображений из menuBar
+        self.del_image.triggered.connect(self.dl_image)
+        self.edit_image.triggered.connect(self.ed_image)
+
         # # Обработчик экспортов из menuBar
         # self.export_csv.triggered.connect(...)
+
+    def add_img(self):  # Функция для добавления изображений в выбранный альбом
+        self.add = Add_Image()
+        self.add.show()
 
     def cr_tag(self):  # Обработчик создания нового тега
         self.tag = New_Tag()
@@ -50,7 +58,7 @@ class PhotoCollection(QMainWindow):
         self.tag = Del_Tag()
         self.tag.show()
 
-    def new_alb(self):  # Обработчик создания нового альбома
+    def new_alb(self):  # Обработчик создания альбома
         self.new_al = New_Album()
         self.new_al.show()
 
@@ -62,20 +70,25 @@ class PhotoCollection(QMainWindow):
         self.ed_alb = Edit_Album()
         self.ed_alb.show()
 
-    def dl_image(self):  # Обработчик изменения альбомов
-        ...
+    def dl_image(self):  # Обработчик удаления изображений
+        self.dl_img = Del_Image()
+        self.dl_img.show()
 
-    # Функция для выбора альбома и обновления comboBox с изображениями
-    def choose_alb(self):
-        ...
+    def ed_image(self):  # Обработчик изменения изображений
+        self.ed_img = Edit_Image()
+        self.ed_img.show()
 
-    # Функция для добавления изображений в выбранный альбом
-    def add_img(self):
-        self.add = Add_Image()
-        self.add.show()
+    def choose_alb(self):  # Функция для выбора альбома и обновления comboBox с изображениями
+        self.comboBox_image.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute(
+            f'SELECT title FROM image WHERE id_album = (SELECT id FROM album WHERE title = "{self.comboBox_album.currentText()}")').fetchall()
+        self.comboBox_image.addItems([item[0] for item in result])
+        con.close()
 
-    # Функция для обновления интерфейса
-    def update_ui(self):
+    def update_alb(self):  # Функция для обновления интерфейса
+        self.comboBox_album.clear()
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
         result = cur.execute('SELECT title FROM album').fetchall()
@@ -87,6 +100,7 @@ class PhotoCollection(QMainWindow):
 ТЕГИ
 '''
 
+
 class New_Tag(QWidget):
     def __init__(self):
         super().__init__()
@@ -96,15 +110,19 @@ class New_Tag(QWidget):
     def check_new_tag(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f"INSERT INTO tags(title) VALUES('{self.new_tag_text.text()}')")
-        con.commit()
-        con.close()
-        self.close()
-        status_bar.showMessage(f'{config.new_tag_text}', 3_000)
 
-        '''
-        проверка на существование тега
-        '''
+        check = cur.execute('SELECT title FROM tags WHERE title=?',
+                            (self.new_tag_text.text(),)).fetchall()
+        if len(check) == 0:
+            cur.execute(f"INSERT INTO tags(title) VALUES('{self.new_tag_text.text()}')")
+            con.commit()
+            con.close()
+            self.close()
+            status_bar.showMessage(f'{config.new_tag_text}', 3_000)
+        else:
+            status_bar.showMessage('Ошибка', 3_000)
+            con.close()
+            self.close()
 
 
 class Del_Tag(QWidget):
@@ -114,14 +132,14 @@ class Del_Tag(QWidget):
         self.del_tag_btn.clicked.connect(self.check_del_tag)
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        result = cur.execute('SELECT title FROM tags')
+        result = cur.execute('SELECT title FROM tags').fetchall()
         self.comboBox.addItems([item[0] for item in result])
         con.close()
 
     def check_del_tag(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f"DELETE FROM tags WHERE title = '{self.comboBox.currentText()}'")
+        cur.execute(f"DELETE FROM tags WHERE title = '{self.comboBox.currentText()}'").fetchall()
         con.commit()
         con.close()
         self.close()
@@ -144,9 +162,9 @@ class Edit_Tag(QWidget):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
         cur.execute(
-                    f"UPDATE tags "
-                    f"SET title = '{self.lineEdit.text()}' WHERE title = '{self.comboBox.currentText()}'"
-                    )
+            f"UPDATE tags "
+            f"SET title = '{self.lineEdit.text()}' WHERE title = '{self.comboBox.currentText()}'"
+        )
         con.commit()
         con.close()
         self.close()
@@ -157,6 +175,7 @@ class Edit_Tag(QWidget):
 АЛЬБОМЫ
 '''
 
+
 class New_Album(QWidget):
     def __init__(self):
         super().__init__()
@@ -166,11 +185,18 @@ class New_Album(QWidget):
     def check_new_album(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f"INSERT INTO album(title) VALUES('{self.new_alb_text.text()}')")
-        con.commit()
-        con.close()
-        self.close()
-        status_bar.showMessage(f'{config.new_album_text}', 3_000)
+        check = cur.execute('SELECT title FROM album WHERE title=?',
+                            (self.new_alb_text.text(),)).fetchall()
+        if len(check) == 0:
+            cur.execute(f"INSERT INTO album(title) VALUES('{self.new_alb_text.text()}')").fetchall()
+            con.commit()
+            con.close()
+            self.close()
+            status_bar.showMessage(f'{config.new_album_text}', 3_000)
+        else:
+            status_bar.showMessage('Ошибка', 3_000)
+            con.close()
+            self.close()
 
 
 class Del_Album(QWidget):
@@ -180,14 +206,14 @@ class Del_Album(QWidget):
         self.del_alb_btn.clicked.connect(self.check_del_alb)
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        result = cur.execute('SELECT title FROM album')
+        result = cur.execute('SELECT title FROM album').fetchall()
         self.comboBox.addItems([item[0] for item in result])
         con.close()
 
     def check_del_alb(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f"DELETE FROM album WHERE title = '{self.comboBox.currentText()}'")
+        cur.execute(f"DELETE FROM album WHERE title = '{self.comboBox.currentText()}'").fetchall()
         con.commit()
         con.close()
         self.close()
@@ -206,14 +232,13 @@ class Edit_Album(QWidget):
         self.comboBox.addItems([item[0] for item in result])
         con.close()
 
-
     def ok(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
         cur.execute(
-                    f"UPDATE album "
-                    f"SET title = '{self.lineEdit.text()}' WHERE title = '{self.comboBox.currentText()}'"
-                    )
+            f"UPDATE album "
+            f"SET title = '{self.lineEdit.text()}' WHERE title = '{self.comboBox.currentText()}'"
+        )
         con.commit()
         con.close()
         self.close()
@@ -231,7 +256,7 @@ class Add_Image(QWidget):
         self.pushButton.clicked.connect(self.add)
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        result = cur.execute('SELECT title FROM album')
+        result = cur.execute('SELECT title FROM album').fetchall()
         self.comboBox.addItems([item[0] for item in result])
         con.close()
 
@@ -244,20 +269,61 @@ class Add_Image(QWidget):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
         photo = QFileDialog.getOpenFileName(self, 'Выберите изображение', '')[0]
-
-        cur.execute(f"""INSERT INTO image(file) 
-        VALUES ({(self.convertToBinaryData(photo),)})""")
-
+        cur.execute(f"""INSERT INTO image(file, title, id_album) 
+                        VALUES (?, '{self.lineEdit.text()}', (SELECT id FROM album WHERE title = 
+                        '{self.comboBox.currentText()}'))""", (self.convertToBinaryData(photo),))
         con.commit()
         con.close()
         self.close()
         status_bar.showMessage(f'{config.add_image_text}', 3_000)
 
+
 class Del_Image(QWidget):
-    ...
+    def __init__(self):
+        super().__init__()
+        uic.loadUi(config.del_image, self)
+
+        self.update_album.clicked.connect(self.update_alb)
+        self.delete_images.clicked.connect(self.delete_img)
+        self.update_img.clicked.connect(self.update_images)
+
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute('SELECT title FROM album').fetchall()
+        self.comboBox_alb.addItems([item[0] for item in result])
+        con.close()
+
+    def update_alb(self):
+        self.comboBox_alb.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute('SELECT title FROM album').fetchall()
+        self.comboBox_alb.addItems([item[0] for item in result])
+        con.close()
+
+    def update_images(self):
+        self.comboBox_img.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute(
+            f'SELECT title FROM image WHERE id_album = (SELECT id FROM album '
+            f'WHERE title = "{self.comboBox_alb.currentText()}")').fetchall()
+        self.comboBox_img.addItems([item[0] for item in result])
+        con.close()
+
+    def delete_img(self):
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute(f'''
+                            
+                            ''').fetchall()
+        self.comboBox_img.addItems([item[0] for item in result])
+        con.close()
+
 
 class Edit_Image(QWidget):
     ...
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
