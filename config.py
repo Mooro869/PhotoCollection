@@ -2,6 +2,7 @@ bd_file = 'files/photocoll.sqlite'
 icon = 'files/icon.ico'
 main_window = 'files/main_window_2.ui'
 image = 'files/image.jpg'
+about_file = 'files/about.ui'
 
 
 # АЛЬБОМЫ
@@ -21,7 +22,7 @@ edit_image = 'files/image/edit_image.ui'
 
 add_image_text = 'Изображение добавлено'
 del_image_text = 'Изображение удалено'
-edit_image_text = 'Изображение удалено'
+edit_image_text = 'Изображение изменено'
 
 
 # ТЕГИ
@@ -32,3 +33,5 @@ edit_tag = 'files/tags/edit_tag.ui'
 new_tag_text = 'Тег создан'
 del_tag_text = 'Тег удален'
 edit_tag_text = 'Тег изменен'
+
+export_txt_text = 'ID и названия альбомов экспортированы в txt файл'

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>999</width>
-    <height>598</height>
+    <width>1000</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -208,7 +208,7 @@
    <widget class="QPushButton" name="choose_image">
     <property name="geometry">
      <rect>
-      <x>500</x>
+      <x>490</x>
       <y>10</y>
       <width>93</width>
       <height>28</height>
@@ -224,7 +224,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>999</width>
+     <width>1000</width>
      <height>26</height>
     </rect>
    </property>
@@ -247,7 +247,7 @@
     <property name="title">
      <string>Экпортировать</string>
     </property>
-    <addaction name="export_csv"/>
+    <addaction name="export_txt"/>
    </widget>
    <widget class="QMenu" name="help">
     <property name="title">
@@ -309,9 +309,9 @@
     <string>Изменить тег</string>
    </property>
   </action>
-  <action name="export_csv">
+  <action name="export_txt">
    <property name="text">
-    <string>...в csv</string>
+    <string>...в txt</string>
    </property>
   </action>
  </widget>
