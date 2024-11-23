@@ -44,6 +44,7 @@ class PhotoCollection(QMainWindow):
         # Обработчик экспортов из menuBar
         self.export_txt.triggered.connect(self.exp_txt)
 
+        # Обработчик информации о программе
         self.about.triggered.connect(self.about_text)
 
     def add_img(self):  # Функция для добавления изображений в выбранный альбом
@@ -119,10 +120,10 @@ class PhotoCollection(QMainWindow):
         con = sqlite3.connect(config.bd_file)
         c = con.cursor()
         lst = []
-        for row in c.execute('SELECT id, title FROM album').fetchall():
+        for row in c.execute('SELECT title FROM album').fetchall():
             lst.append(row)
         print(lst)
-        with open("output_info.txt", 'w') as file:
+        with open("output_info.txt", 'w', encoding='UTF-8') as file:
             for x in lst:
                 for n in x:
                     file.write(str(n) + '\n')
@@ -130,7 +131,10 @@ class PhotoCollection(QMainWindow):
         status_bar.showMessage(f'{config.export_txt_text}', 3_000)
 
     def about_text(self):  # Функция для вывода информации о программе
-        uic.loadUi(config.about_file, self)
+        self.about = About()
+        self.about.show()
+
+
 '''
 ТЕГИ
 '''
@@ -409,6 +413,13 @@ class Edit_Image(QWidget):
         self.close()
         status_bar.showMessage(f'{config.edit_image_text}', 3_000)
 
+
+class About(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi(config.about_file, self)
+
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
