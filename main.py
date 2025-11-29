@@ -18,8 +18,8 @@ class PhotoCollection(QMainWindow):
         status_bar = self.statusbar
 
         # Установка изображения в главном окне
-        self.pixmap = QPixmap(config.image)
-        self.label_img.setPixmap(self.pixmap)
+        '''self.pixmap = QPixmap(config.image)
+        self.label_img.setPixmap(self.pixmap)'''
 
         # Обработка кнопок главного окна
         self.create_alb.clicked.connect(self.new_alb)
@@ -144,12 +144,18 @@ class New_Tag(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi(config.new_tag, self)
-        self.new_tag_btn.clicked.connect(self.check_new_tag)
+        self.pushButton.clicked.connect(self.check_new_tag)
+
+        self.comboBox_2.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute('SELECT title FROM image').fetchall()
+        self.comboBox_2.addItems([item[0] for item in result])
+        con.close()
 
     def check_new_tag(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-
         check = cur.execute('SELECT title FROM tags WHERE title=?',
                             (self.new_tag_text.text(),)).fetchall()
         if len(check) == 0:
@@ -161,7 +167,6 @@ class New_Tag(QWidget):
         else:
             status_bar.showMessage('Ошибка', 3_000)
             con.close()
-            self.close()
 
 
 class Del_Tag(QWidget):

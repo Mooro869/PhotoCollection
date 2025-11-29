@@ -179,24 +179,11 @@
      </sizepolicy>
     </property>
    </widget>
-   <widget class="QLabel" name="label_img">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>230</y>
-      <width>270</width>
-      <height>211</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QLabel" name="actual_img">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>80</y>
+      <x>280</x>
+      <y>90</y>
       <width>691</width>
       <height>471</height>
      </rect>
@@ -208,8 +195,8 @@
    <widget class="QPushButton" name="choose_image">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>10</y>
+      <x>504</x>
+      <y>8</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -311,7 +298,7 @@
   </action>
   <action name="export_txt">
    <property name="text">
-    <string>...в txt</string>
+    <string>...альбомы в txt</string>
    </property>
   </action>
  </widget>

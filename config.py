@@ -26,7 +26,7 @@ edit_image_text = 'Изображение изменено'
 
 
 # ТЕГИ
-new_tag = 'files/tags/new_tag.ui'
+new_tag = 'files/tags/add_tag.ui'
 del_tag = 'files/tags/del_tag.ui'
 edit_tag = 'files/tags/edit_tag.ui'
 
@@ -34,4 +34,4 @@ new_tag_text = 'Тег создан'
 del_tag_text = 'Тег удален'
 edit_tag_text = 'Тег изменен'
 
-export_txt_text = 'ID и названия альбомов экспортированы в txt файл'
+export_txt_text = 'названия альбомов экспортированы в txt файл'
