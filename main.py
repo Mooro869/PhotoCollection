@@ -2,7 +2,7 @@ import sys
 import sqlite3
 import config
 
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QPalette, QLinearGradient, QColor, QBrush
 from PyQt6 import QtGui, uic
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QFormLayout, QFileDialog
 
@@ -27,6 +27,14 @@ class PhotoCollection(QMainWindow):
         super().__init__()
         uic.loadUi(config.main_window, self)
         self.setFixedSize(1000, 600)
+
+        self.setAutoFillBackground(True)
+        palette = self.palette()
+        gradient = QLinearGradient(0, 0, 0, 700)
+        gradient.setColorAt(0.0, QColor('#F9DFDF'))
+        gradient.setColorAt(1.0, QColor('#FBEFEF'))
+        palette.setBrush(QPalette.ColorRole.Window, QBrush(gradient))
+        self.setPalette(palette)
 
         # Нужно для того, чтобы была возможность иметь доступ к statusbar в каждом классе
         global status_bar
