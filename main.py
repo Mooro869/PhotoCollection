@@ -7,19 +7,30 @@ from PyQt6 import QtGui, uic
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QFormLayout, QFileDialog
 
 
+def exp_txt():
+    con = sqlite3.connect(config.bd_file)
+    c = con.cursor()
+    lst = []
+    for row in c.execute('SELECT title FROM album').fetchall():
+        lst.append(row)
+    print(lst)
+    with open("output_info.txt", 'w', encoding='UTF-8') as file:
+        for x in lst:
+            for n in x:
+                file.write(str(n) + '\n')
+    con.close()
+    status_bar.showMessage(f'{config.export_txt_text}', 3_000)
+
+
 class PhotoCollection(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi(config.main_window, self)
         self.setFixedSize(1000, 600)
 
-        # Нужно для того чтобы была возможность иметь доступ к statusbar в каждом классе
+        # Нужно для того, чтобы была возможность иметь доступ к statusbar в каждом классе
         global status_bar
         status_bar = self.statusbar
-
-        # Установка изображения в главном окне
-        '''self.pixmap = QPixmap(config.image)
-        self.label_img.setPixmap(self.pixmap)'''
 
         # Обработка кнопок главного окна
         self.create_alb.clicked.connect(self.new_alb)
@@ -27,6 +38,8 @@ class PhotoCollection(QMainWindow):
         self.choose_album.clicked.connect(self.choose_alb)
         self.add_image.clicked.connect(self.add_img)
         self.choose_image.clicked.connect(self.actual)
+        self.update_tags.clicked.connect(self.update_tag)
+        self.choose_tags.clicked.connect(self.choose_tag)
 
         # Обработка тегов из menuBar
         self.create_tag_2.triggered.connect(self.cr_tag)
@@ -42,7 +55,7 @@ class PhotoCollection(QMainWindow):
         self.edit_image.triggered.connect(self.ed_image)
 
         # Обработчик экспортов из menuBar
-        self.export_txt.triggered.connect(self.exp_txt)
+        self.export_txt.triggered.connect(exp_txt)
 
         # Обработчик информации о программе
         self.about.triggered.connect(self.about_text)
@@ -100,6 +113,24 @@ class PhotoCollection(QMainWindow):
         self.comboBox_album.addItems([item[0] for item in result])
         con.close()
 
+    def update_tag(self):
+        self.comboBox_tags.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute('SELECT title FROM tags').fetchall()
+        self.comboBox_tags.addItems([item[0] for item in result])
+        con.close()
+
+    def choose_tag(self):
+        self.comboBox_image.clear()
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute(
+            f"SELECT title FROM image WHERE id = (SELECT id_image FROM tags WHERE title = '{self.comboBox_tags.currentText()}')").fetchall()
+        self.comboBox_image.addItems([item[0] for item in result])
+        con.close()
+
+
     @staticmethod
     def write_to_file(data, filename='image.jpg'):  # Функция для преобразования двоичных данных в нужный формат
         with open(filename, 'wb') as file:
@@ -115,20 +146,6 @@ class PhotoCollection(QMainWindow):
         self.pixmap = QPixmap(self.write_to_file(res))
         scaled_pixmap = self.pixmap.scaled(691, 471)
         self.actual_img.setPixmap(scaled_pixmap)
-
-    def exp_txt(self):
-        con = sqlite3.connect(config.bd_file)
-        c = con.cursor()
-        lst = []
-        for row in c.execute('SELECT title FROM album').fetchall():
-            lst.append(row)
-        print(lst)
-        with open("output_info.txt", 'w', encoding='UTF-8') as file:
-            for x in lst:
-                for n in x:
-                    file.write(str(n) + '\n')
-        con.close()
-        status_bar.showMessage(f'{config.export_txt_text}', 3_000)
 
     def about_text(self):  # Функция для вывода информации о программе
         self.about = About()
@@ -156,16 +173,25 @@ class New_Tag(QWidget):
     def check_new_tag(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        check = cur.execute('SELECT title FROM tags WHERE title=?',
-                            (self.new_tag_text.text(),)).fetchall()
-        if len(check) == 0:
-            cur.execute(f"INSERT INTO tags(title) VALUES('{self.new_tag_text.text()}')")
-            con.commit()
-            con.close()
-            self.close()
-            status_bar.showMessage(f'{config.new_tag_text}', 3_000)
+        image_title = self.comboBox_2.currentText()
+        image_result = cur.execute('SELECT id FROM image WHERE title=?',
+                                   (image_title,)).fetchone()
+        if image_result:
+            id_image = image_result[0]
+            check = cur.execute('SELECT title FROM tags WHERE title=? AND id_image=?',
+                                (self.new_tag_text.text(), id_image)).fetchall()
+            if len(check) == 0:
+                cur.execute("INSERT INTO tags(title, id_image) VALUES(?, ?)",
+                            (self.new_tag_text.text(), id_image))
+                con.commit()
+                con.close()
+                self.close()
+                status_bar.showMessage(f'{config.new_tag_text}', 3_000)
+            else:
+                status_bar.showMessage('Ошибка: такой тег уже существует для этого изображения', 3_000)
+                con.close()
         else:
-            status_bar.showMessage('Ошибка', 3_000)
+            status_bar.showMessage('Ошибка: изображение не найдено', 3_000)
             con.close()
 
 
@@ -424,7 +450,6 @@ class About(QWidget):
         super().__init__()
         uic.loadUi(config.about_file, self)
 
-        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

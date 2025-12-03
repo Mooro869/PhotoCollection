@@ -34,4 +34,4 @@ new_tag_text = 'Тег создан'
 del_tag_text = 'Тег удален'
 edit_tag_text = 'Тег изменен'
 
-export_txt_text = 'названия альбомов экспортированы в txt файл'
+export_txt_text = 'Все заголовки альбомов экспортированы в txt файл'

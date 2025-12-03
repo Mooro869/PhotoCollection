@@ -29,7 +29,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Photo Collection&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;span style=&quot; font-family:'JetBrains Mono,monospace'; color:#a9b7c6;&quot;&gt;PhotoCollection - это приложение для удобного хранения, организации и работы с фотографиями.&lt;br/&gt;В приложении вы сможете создавать альбомы, редактировать названия альбомов, добавлять фотографии в альбомы, &lt;br/&gt;удалять альбомы и фотографии. Также в приложении есть возможность экспортировать данные о фотографиях в &lt;br/&gt;текстовый формат.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:'JetBrains Mono,monospace'; font-size:9pt; font-weight:600; color:black;&quot;&gt;Photo Collection&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:'JetBrains Mono,monospace'; font-size:9pt; color:#545454;&quot;&gt;&lt;br/&gt;PhotoCollection - это приложение для удобного хранения, организации и работы с фотографиями.&lt;br/&gt;Здесь вы сможете создавать альбомы, делать теги для ваших изображений.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
