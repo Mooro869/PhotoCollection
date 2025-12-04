@@ -16,7 +16,7 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>150</y>
      <width>211</width>
      <height>21</height>
@@ -26,24 +26,42 @@
   <widget class="QPushButton" name="edit_image">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>16</x>
      <y>220</y>
      <width>221</width>
      <height>28</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
+   </property>
    <property name="text">
-    <string>Изменить</string>
+    <string>Изменить изображение</string>
    </property>
   </widget>
   <widget class="QPushButton" name="update_img">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>126</x>
      <y>180</y>
      <width>111</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
    </property>
    <property name="text">
     <string>Обновить
@@ -53,11 +71,20 @@
   <widget class="QPushButton" name="update_album">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>16</x>
      <y>180</y>
      <width>111</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
    </property>
    <property name="text">
     <string>Обновить
@@ -67,7 +94,7 @@
   <widget class="QLabel" name="text">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
      <width>261</width>
      <height>31</height>
@@ -85,7 +112,7 @@
   <widget class="QComboBox" name="comboBox_alb">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>40</y>
      <width>211</width>
      <height>22</height>
@@ -95,7 +122,7 @@
   <widget class="QComboBox" name="comboBox_img">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>100</y>
      <width>211</width>
      <height>21</height>
@@ -105,7 +132,7 @@
   <widget class="QLabel" name="text_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>70</y>
      <width>261</width>
      <height>41</height>
@@ -123,7 +150,7 @@
   <widget class="QLabel" name="text_3">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>130</y>
      <width>261</width>
      <height>21</height>

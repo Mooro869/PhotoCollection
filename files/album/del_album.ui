@@ -24,12 +24,21 @@
     <rect>
      <x>10</x>
      <y>70</y>
-     <width>141</width>
+     <width>271</width>
      <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
+   </property>
    <property name="text">
-    <string>Удалить</string>
+    <string>Удалить альбом</string>
    </property>
   </widget>
   <widget class="QLabel" name="text">

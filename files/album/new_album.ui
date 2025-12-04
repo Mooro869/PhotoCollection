@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>95</height>
+    <height>102</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>11</pointsize>
     </font>
    </property>
    <property name="text">
@@ -58,8 +58,8 @@
     <rect>
      <x>4</x>
      <y>60</y>
-     <width>56</width>
-     <height>21</height>
+     <width>261</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -68,8 +68,17 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
+   </property>
    <property name="text">
-    <string>ОК</string>
+    <string>Создать альбом</string>
    </property>
   </widget>
  </widget>

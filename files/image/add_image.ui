@@ -16,7 +16,7 @@
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>30</x>
      <y>50</y>
      <width>171</width>
      <height>22</height>
@@ -26,7 +26,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>30</x>
      <y>20</y>
      <width>171</width>
      <height>16</height>
@@ -39,11 +39,20 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>30</x>
      <y>130</y>
-     <width>93</width>
+     <width>171</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"> background-color: rgba(220, 220, 220, 0.9);  /* Светло-серый фон */
+                color: black;                               /* Черный текст */
+                border-radius: 10px;                        /* Закругление углов */
+                border: 1px solid rgba(180, 180, 180, 0.9); /* Серая рамка */
+                padding: 5px 10px;                         /* Внутренние отступы */
+                font-weight: 400;                          /* Жирный текст */ 
+</string>
    </property>
    <property name="text">
     <string>Добавить</string>
@@ -52,7 +61,7 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>30</x>
      <y>100</y>
      <width>171</width>
      <height>22</height>
@@ -62,7 +71,7 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>30</x>
      <y>80</y>
      <width>171</width>
      <height>16</height>
