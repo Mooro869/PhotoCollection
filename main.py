@@ -8,18 +8,21 @@ from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QFormLayout, QFi
 
 
 def exp_txt():
-    con = sqlite3.connect(config.bd_file)
-    c = con.cursor()
-    lst = []
-    for row in c.execute('SELECT title FROM album').fetchall():
-        lst.append(row)
-    print(lst)
-    with open("output_info.txt", 'w', encoding='UTF-8') as file:
-        for x in lst:
-            for n in x:
-                file.write(str(n) + '\n')
-    con.close()
-    status_bar.showMessage(f'{config.export_txt_text}', 3_000)
+    try:
+        con = sqlite3.connect(config.bd_file)
+        c = con.cursor()
+
+        # Более эффективный запрос
+        lst = [row[0] for row in c.execute('SELECT title FROM album')]
+
+        with open("output_info.txt", 'w', encoding='UTF-8') as file:
+            for item in lst:
+                file.write(f"{item}\n")
+
+        con.close()
+        status_bar.showMessage(f'{config.export_txt_text}', 3_000)
+    except Exception as e:
+        status_bar.showMessage(f'Ошибка экспорта: {str(e)}', 5_000)
 
 
 class PhotoCollection(QMainWindow):
@@ -104,14 +107,17 @@ class PhotoCollection(QMainWindow):
         self.ed_img = Edit_Image()
         self.ed_img.show()
 
-    def choose_alb(self):  # Функция для выбора альбома и обновления comboBox с изображениями
+    def choose_alb(self):
         self.comboBox_image.clear()
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        result = cur.execute(
-            f'SELECT title FROM image WHERE id_album = (SELECT id FROM album WHERE title = "{self.comboBox_album.currentText()}")').fetchall()
-        self.comboBox_image.addItems([item[0] for item in result])
-        con.close()
+        try:
+            with db_connection() as cur:
+                result = cur.execute('''
+                    SELECT title FROM image 
+                    WHERE id_album = (SELECT id FROM album WHERE title = ?)
+                ''', (self.comboBox_album.currentText(),)).fetchall()
+                self.comboBox_image.addItems([item[0] for item in result])
+        except Exception as e:
+            self.status_bar.showMessage(f'Ошибка: {str(e)}', 5_000)
 
     def update_alb(self):  # Функция для обновления интерфейса
         self.comboBox_album.clear()
@@ -131,13 +137,22 @@ class PhotoCollection(QMainWindow):
 
     def choose_tag(self):
         self.comboBox_image.clear()
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        result = cur.execute(
-            f"SELECT title FROM image WHERE id = (SELECT id_image FROM tags WHERE title = '{self.comboBox_tags.currentText()}')").fetchall()
-        self.comboBox_image.addItems([item[0] for item in result])
-        con.close()
+        try:
+            con = sqlite3.connect(config.bd_file)
+            cur = con.cursor()
 
+            # Получаем все изображения с данным тегом
+            result = cur.execute('''
+                SELECT i.title 
+                FROM image i
+                JOIN tags t ON i.id = t.id_image
+                WHERE t.title = ?
+            ''', (self.comboBox_tags.currentText(),)).fetchall()
+
+            self.comboBox_image.addItems([item[0] for item in result])
+            con.close()
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка при выборе тега: {str(e)}', 5_000)
 
     @staticmethod
     def write_to_file(data, filename='image.jpg'):  # Функция для преобразования двоичных данных в нужный формат
@@ -215,13 +230,16 @@ class Del_Tag(QWidget):
         con.close()
 
     def check_del_tag(self):
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        cur.execute(f"DELETE FROM tags WHERE title = '{self.comboBox.currentText()}'").fetchall()
-        con.commit()
-        con.close()
-        self.close()
-        status_bar.showMessage(f'{config.del_tag_text}', 3_000)
+        try:
+            con = sqlite3.connect(config.bd_file)
+            cur = con.cursor()
+            cur.execute("DELETE FROM tags WHERE title = ?", (self.comboBox.currentText(),))
+            con.commit()
+            con.close()
+            self.close()
+            status_bar.showMessage(f'{config.del_tag_text}', 3_000)
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка при удалении тега: {str(e)}', 5_000)
 
 
 class Edit_Tag(QWidget):
@@ -237,16 +255,16 @@ class Edit_Tag(QWidget):
         con.close()
 
     def ok(self):
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        cur.execute(
-            f"UPDATE tags "
-            f"SET title = '{self.lineEdit.text()}' WHERE title = '{self.comboBox.currentText()}'"
-        )
-        con.commit()
-        con.close()
-        self.close()
-        status_bar.showMessage(f'{config.edit_tag_text}', 3_000)
+        try:
+            with db_connection() as cur:
+                cur.execute(
+                    "UPDATE tags SET title = ? WHERE title = ?",
+                    (self.lineEdit.text(), self.comboBox.currentText())
+                )
+            self.close()
+            status_bar.showMessage(f'{config.edit_tag_text}', 3_000)
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка: {str(e)}', 5_000)
 
 
 ''' 
@@ -261,20 +279,27 @@ class New_Album(QWidget):
         self.new_alb_btn.clicked.connect(self.check_new_album)
 
     def check_new_album(self):
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        check = cur.execute('SELECT title FROM album WHERE title=?',
-                            (self.new_alb_text.text(),)).fetchall()
-        if len(check) == 0:
-            cur.execute(f"INSERT INTO album(title) VALUES('{self.new_alb_text.text()}')").fetchall()
-            con.commit()
-            con.close()
-            self.close()
-            status_bar.showMessage(f'{config.new_album_text}', 3_000)
-        else:
-            status_bar.showMessage('Ошибка', 3_000)
-            con.close()
-            self.close()
+        try:
+            con = sqlite3.connect(config.bd_file)
+            cur = con.cursor()
+            check = cur.execute('SELECT title FROM album WHERE title=?',
+                                (self.new_alb_text.text(),)).fetchall()
+            if len(check) == 0:
+                cur.execute("INSERT INTO album(title) VALUES(?)", (self.new_alb_text.text(),))
+                con.commit()
+                con.close()
+                self.close()
+                status_bar.showMessage(f'{config.new_album_text}', 3_000)
+            else:
+                status_bar.showMessage('Ошибка: альбом с таким названием уже существует', 3_000)
+                con.close()
+        except sqlite3.Error as e:
+            status_bar.showMessage(f'Ошибка базы данных: {str(e)}', 5_000)
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка: {str(e)}', 5_000)
+        finally:
+            if 'con' in locals():
+                con.close()
 
 
 class Del_Album(QWidget):
@@ -291,7 +316,15 @@ class Del_Album(QWidget):
     def check_del_alb(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f"DELETE FROM album WHERE title = '{self.comboBox.currentText()}'").fetchall()
+        album_result = cur.execute(f'SELECT id FROM album WHERE title = "{self.comboBox.currentText()}"').fetchone()
+
+        if album_result:
+            album_id = album_result[0]
+            images = cur.execute(f'SELECT id FROM image WHERE id_album = {album_id}').fetchall()
+            for img_id in images:
+                cur.execute(f'DELETE FROM tags WHERE id_image = {img_id[0]}')
+            cur.execute(f'DELETE FROM image WHERE id_album = {album_id}')
+            cur.execute(f'DELETE FROM album WHERE id = {album_id}')
         con.commit()
         con.close()
         self.close()
@@ -333,29 +366,73 @@ class Add_Image(QWidget):
         super().__init__()
         uic.loadUi(config.add_image, self)
         self.pushButton.clicked.connect(self.add)
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        result = cur.execute('SELECT title FROM album').fetchall()
-        self.comboBox.addItems([item[0] for item in result])
-        con.close()
+
+        try:
+            con = sqlite3.connect(config.bd_file)
+            cur = con.cursor()
+            result = cur.execute('SELECT title FROM album').fetchall()
+            self.comboBox.addItems([item[0] for item in result])
+            con.close()
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка загрузки альбомов: {str(e)}', 5_000)
 
     @staticmethod
     def convertToBinaryData(filename):
-        with open(filename, 'rb') as file:
-            blobData = file.read()
-        return blobData
+        """Безопасное чтение файла"""
+        try:
+            with open(filename, 'rb') as file:
+                return file.read()
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка чтения файла: {str(e)}', 5_000)
+            return None
 
     def add(self):
-        con = sqlite3.connect(config.bd_file)
-        cur = con.cursor()
-        photo = QFileDialog.getOpenFileName(self, 'Выберите изображение', '')[0]
-        cur.execute(f"""INSERT INTO image(file, title, id_album) 
-                        VALUES (?, '{self.lineEdit.text()}', (SELECT id FROM album WHERE title = 
-                        '{self.comboBox.currentText()}'))""", (self.convertToBinaryData(photo),))
-        con.commit()
-        con.close()
-        self.close()
-        status_bar.showMessage(f'{config.add_image_text}', 3_000)
+        try:
+            photo = QFileDialog.getOpenFileName(
+                self,
+                'Выберите изображение',
+                '',
+                'Images (*.png *.jpg *.jpeg *.bmp *.gif)'
+            )[0]
+
+            if not photo:
+                return
+
+            image_data = self.convertToBinaryData(photo)
+            if not image_data:
+                return
+
+            # Проверка размера файла (например, максимум 10MB)
+            if len(image_data) > 10 * 1024 * 1024:
+                status_bar.showMessage('Ошибка: файл слишком большой (максимум 10MB)', 5_000)
+                return
+
+            con = sqlite3.connect(config.bd_file)
+            cur = con.cursor()
+
+            # Проверяем, не существует ли уже изображение с таким именем
+            check = cur.execute(
+                'SELECT title FROM image WHERE title = ?',
+                (self.lineEdit.text(),)
+            ).fetchone()
+
+            if check:
+                status_bar.showMessage('Ошибка: изображение с таким названием уже существует', 3_000)
+                con.close()
+                return
+
+            # Добавляем изображение
+            cur.execute('''INSERT INTO image(file, title, id_album) 
+                        VALUES (?, ?, (SELECT id FROM album WHERE title = ?))''',
+                        (image_data, self.lineEdit.text(), self.comboBox.currentText()))
+
+            con.commit()
+            con.close()
+            self.close()
+            status_bar.showMessage(f'{config.add_image_text}', 3_000)
+
+        except Exception as e:
+            status_bar.showMessage(f'Ошибка добавления изображения: {str(e)}', 5_000)
 
 
 class Del_Image(QWidget):
@@ -394,11 +471,22 @@ class Del_Image(QWidget):
     def delete_img(self):
         con = sqlite3.connect(config.bd_file)
         cur = con.cursor()
-        cur.execute(f'''
-                            DELETE FROM image
-                            WHERE id_album = (SELECT id FROM album WHERE title = "{self.comboBox_alb.currentText()}")
-                            AND title = "{self.comboBox_img.currentText()}"
-                            ''').fetchall()
+
+        # Сначала получаем id изображения
+        result = cur.execute(f'''
+            SELECT id FROM image 
+            WHERE id_album = (SELECT id FROM album WHERE title = "{self.comboBox_alb.currentText()}")
+            AND title = "{self.comboBox_img.currentText()}"
+        ''').fetchone()
+
+        if result:
+            image_id = result[0]
+            # Удаляем связанные теги
+            cur.execute(f'DELETE FROM tags WHERE id_image = {image_id}')
+            # Удаляем само изображение
+            cur.execute(f'''
+                DELETE FROM image WHERE id = {image_id}''')
+
         con.commit()
         con.close()
         self.close()
