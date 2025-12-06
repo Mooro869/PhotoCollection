@@ -107,17 +107,14 @@ class PhotoCollection(QMainWindow):
         self.ed_img = Edit_Image()
         self.ed_img.show()
 
-    def choose_alb(self):
+    def choose_alb(self):  # Функция для выбора альбома и обновления comboBox с изображениями
         self.comboBox_image.clear()
-        try:
-            with db_connection() as cur:
-                result = cur.execute('''
-                    SELECT title FROM image 
-                    WHERE id_album = (SELECT id FROM album WHERE title = ?)
-                ''', (self.comboBox_album.currentText(),)).fetchall()
-                self.comboBox_image.addItems([item[0] for item in result])
-        except Exception as e:
-            self.status_bar.showMessage(f'Ошибка: {str(e)}', 5_000)
+        con = sqlite3.connect(config.bd_file)
+        cur = con.cursor()
+        result = cur.execute(
+            f'SELECT title FROM image WHERE id_album = (SELECT id FROM album WHERE title = "{self.comboBox_album.currentText()}")').fetchall()
+        self.comboBox_image.addItems([item[0] for item in result])
+        con.close()
 
     def update_alb(self):  # Функция для обновления интерфейса
         self.comboBox_album.clear()
